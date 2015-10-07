@@ -30,6 +30,8 @@ import java.io.InputStreamReader;
 import java.util.Date;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.es.SpanishAnalyzer;
+
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
@@ -56,8 +58,8 @@ public class SearchFiles {
       System.exit(0);
     }
 
-    String index = "index";
-    String field = "contents";
+    String index = "indexES";
+    String field = "title";
     String queries = null;
     int repeat = 0;
     boolean raw = false;
@@ -94,7 +96,7 @@ public class SearchFiles {
     
     IndexReader reader = DirectoryReader.open(FSDirectory.open(new File(index)));
     IndexSearcher searcher = new IndexSearcher(reader);
-    Analyzer analyzer = new StandardAnalyzer(Version.LATEST);
+    Analyzer analyzer = new SpanishAnalyzer(Version.LATEST);
 
     BufferedReader in = null;
     if (queries != null) {
