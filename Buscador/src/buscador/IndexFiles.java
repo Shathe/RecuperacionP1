@@ -70,7 +70,7 @@ public class IndexFiles {
                 + " [-index INDEX_PATH] [-docs DOCS_PATH] [-update]\n\n"
                 + "This indexes the documents in DOCS_PATH, creating a Lucene index"
                 + "in INDEX_PATH that can be searched with SearchFiles";
-        String indexPath = "indexEN";
+        String indexPath = "Zaguan1";
         String docsPath = null;
         boolean create = true;
         for (int i = 0; i < args.length; i++) {
@@ -201,15 +201,11 @@ public class IndexFiles {
                     // For example the long value 2011021714 would mean
                     // February 17, 2011, 2-3 PM.
                     doc.add(new LongField("modified", file.lastModified(), Field.Store.YES));
-                    insertarenIndice(file,"dc:title","title",  doc, "text");
-                    insertarenIndice(file,"dc:identifier","identifier",  doc, "string");
-                    insertarenIndice(file,"dc:subject","subject",  doc, "text");
-                    insertarenIndice(file,"dc:type","type",  doc, "string");
-                    insertarenIndice(file,"dc:description","description",  doc, "text");
                     insertarenIndice(file,"dc:creator","creator",  doc, "text");
-                    insertarenIndice(file,"dc:publisher","publisher",  doc, "text");
-                    insertarenIndice(file,"dc:format","format",  doc, "string");
-                    insertarenIndice(file,"dc:language","language",  doc, "string");
+                    insertarenIndice(file,"dc:title","title",  doc, "text");
+                    insertarenIndice(file,"dc:description","description",  doc, "text");
+                    insertarenIndice(file,"dc:identifier","identifier",  doc, "text");
+                    insertarenIndice(file,"dc:date","date",  doc, "text");
                     
           // Add the contents of the file to a field named "contents".  Specify a Reader,
                     // so that the text of the file is tokenized and indexed, but not stored.
@@ -246,17 +242,20 @@ public class IndexFiles {
                         //NodeList nodos= docP.getElementsByTagName("csw:Record");
                         
                         NodeList nodos2= docP.getElementsByTagName(etiqueta);
-                        
-                            Element labTest = (Element) nodos2.item(0);
-                            String texto=labTest.getTextContent();
-                               if(tipo.toLowerCase().contains("string")){
+                         String texto="";
+                        for (int i=0;i<nodos2.getLength();i++){
+                            Element labTest = (Element) nodos2.item(i);
+                            texto+=" "+labTest.getTextContent();
+                              
+                        }
+                          if(tipo.toLowerCase().contains("string")){
                                    Field pathField = new StringField(campo, texto, Field.Store.YES);
                                    doc.add(pathField);
                                }
-                               if(tipo.toLowerCase().contains("text")){
+                          if(tipo.toLowerCase().contains("text")){
                                    doc.add(new TextField(campo, texto, Field.Store.YES));
 
-                               }
+                               }   
 
                     } catch (Exception a) {
                     }
