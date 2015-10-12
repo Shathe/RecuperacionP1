@@ -36,7 +36,9 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
@@ -58,8 +60,14 @@ public class SearchFiles {
       System.exit(0);
     }
 
-    String index = "indexES";
-    String field = "title";
+    String index = "Zaguan1"; 
+    String[] fields = {"title", "description", "identifier", "date", "creator"};
+BooleanClause.Occur[] flags = {BooleanClause.Occur.SHOULD, BooleanClause.Occur.SHOULD, BooleanClause.Occur.SHOULD
+, BooleanClause.Occur.SHOULD
+, BooleanClause.Occur.SHOULD};
+
+                    
+                    
     String queries = null;
     int repeat = 0;
     boolean raw = false;
@@ -70,9 +78,7 @@ public class SearchFiles {
       if ("-index".equals(args[i])) {
         index = args[i+1];
         i++;
-      } else if ("-field".equals(args[i])) {
-        field = args[i+1];
-        i++;
+       
       } else if ("-queries".equals(args[i])) {
         queries = args[i+1];
         i++;
@@ -104,7 +110,7 @@ public class SearchFiles {
     } else {
       in = new BufferedReader(new InputStreamReader(System.in, "UTF-8"));
     }
-    QueryParser parser = new QueryParser(Version.LATEST, field, analyzer);
+ 
     while (true) {
       if (queries == null && queryString == null) {                        // prompt the user
         System.out.println("Enter query: ");
@@ -122,10 +128,9 @@ public class SearchFiles {
       }
       
       
-      Query query = parser.parse(line);
-
-      System.out.println("Searching for: " + query.toString(field));
-            
+      Query query = MultiFieldQueryParser.parse(line, fields, flags, analyzer);
+ 
+             
       if (repeat > 0) {                           // repeat & time as benchmark
         Date start = new Date();
         for (int i = 0; i < repeat; i++) {
